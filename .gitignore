@@ -1,5 +1,5 @@
 # --- Python venvs ---
-.venv/
+.venv312/
 venv/
 env/
 
