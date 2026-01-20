@@ -1,0 +1,24 @@
+# Optional: multi-task (binary + score + artefacts)
+# Only use once the binary baseline is stable.
+
+inherit: "configs/base.yaml"
+
+task:
+  kind: "multitask"
+  label_keys:
+    bin: "label_bin"
+    score: "label_score"     # 0-5
+    artefacts: "artefacts"   # multi-hot vector
+
+model:
+  name: "multitask_shared_cnn3d"
+  in_channels: 1
+  num_classes_bin: 2
+  num_classes_score: 6
+  num_artefacts: 5
+
+loss:
+  weights:
+    bin: 1.0
+    score: 0.5
+    artefacts: 0.5
