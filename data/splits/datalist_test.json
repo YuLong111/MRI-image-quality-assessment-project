@@ -1,0 +1,202 @@
+[
+  {
+    "id": "Patient266865838_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient266865838_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient266865838_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient266865838_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient530745006_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient530745006_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient530745006_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient530745006_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient853303953_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient853303953_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient853303953_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient853303953_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient739246770_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient739246770_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient739246770_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient739246770_study_0.nii.gz",
+    "label_bin": 1,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient476568252_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient476568252_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient476568252_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient476568252_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient013406074_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient013406074_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient013406074_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient013406074_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient873305257_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient873305257_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient873305257_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient873305257_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient464959203_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient464959203_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient464959203_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient464959203_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient265107782_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient265107782_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient265107782_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient265107782_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient645116766_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient645116766_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient645116766_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient645116766_study_0.nii.gz",
+    "label_bin": 1,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient714941836_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient714941836_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient714941836_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient714941836_study_0.nii.gz",
+    "label_bin": 1,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient989809536_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient989809536_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient989809536_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient989809536_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient929874313_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient929874313_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient929874313_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient929874313_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient392115519_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient392115519_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient392115519_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient392115519_study_0.nii.gz",
+    "label_bin": 1,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient687547228_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient687547228_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient687547228_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient687547228_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient013177859_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient013177859_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient013177859_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient013177859_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient118565799_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient118565799_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient118565799_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient118565799_study_0.nii.gz",
+    "label_bin": 1,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient724006063_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient724006063_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient724006063_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient724006063_study_0.nii.gz",
+    "label_bin": 1,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient449815847_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient449815847_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient449815847_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient449815847_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient525849715_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient525849715_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient525849715_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient525849715_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient584899654_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient584899654_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient584899654_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient584899654_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "2k"
+  },
+  {
+    "id": "Patient089126151_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient089126151_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient089126151_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient089126151_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient862251443_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient862251443_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient862251443_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient862251443_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  },
+  {
+    "id": "Patient018934401_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient018934401_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient018934401_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient018934401_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k4"
+  },
+  {
+    "id": "Patient520869862_study_0",
+    "dwi": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\dwi\\Patient520869862_study_0.nii.gz",
+    "t2": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\t2\\Patient520869862_study_0.nii.gz",
+    "mask": "D:\\1\\\u6742\u7269\\\u5b66\u6821\\ucl\\year3\\project\\project\\OneDrive_1_2026-1-15\\prostate_mask\\Patient520869862_study_0.nii.gz",
+    "label_bin": 0,
+    "b_value": "1k6"
+  }
+]
