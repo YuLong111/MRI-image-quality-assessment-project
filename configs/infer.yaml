@@ -1,5 +1,0 @@
-inherit: "configs/task_binary.yaml"
-
-infer:
-  checkpoint: "runs/exp01_binary_cnn3d/checkpoints/best.pt"
-  output_csv: "runs/exp01_binary_cnn3d/predictions.csv"
