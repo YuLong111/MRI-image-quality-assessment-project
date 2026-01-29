@@ -1,32 +1,32 @@
-# --- Python venvs ---
+# Python venvs
 .venv312/
 venv/
 env/
 
-# --- Python cache ---
+#Python cache
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 
-# --- Build / packaging ---
+# packaging
 build/
 dist/
 *.egg-info/
 
-# --- Jupyter ---
+#Jupyter
 .ipynb_checkpoints/
 
-# --- OS / editor ---
+# OS 
 .DS_Store
 Thumbs.db
 .vscode/settings.json
 
-# --- Logs / runs / artifacts ---
+# runs
 runs/
 *.log
 
-# --- Local data (don’t commit medical images) ---
+#Local data
 data/raw/
 data/processed/
 *.nii
