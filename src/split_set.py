@@ -14,15 +14,14 @@ def find_case_file(folder: Path, case_id: str) -> Path:
         if len(matches) == 1:
             return matches[0]
         if len(matches) > 1:
-            # deterministic pick
             matches = sorted(matches, key=lambda p: (len(p.name), p.name))
             return matches[0]
     raise FileNotFoundError(f"Cannot find file for {case_id} in {folder}")
 
 
 def main():
-    excel_path = Path(r"data/labels/sampled_file_list.xlsx")  # or your quality labels xlsx
-    base_dir = Path(r"D:\1\杂物\学校\ucl\year3\project\project\OneDrive_1_2026-1-15")  # contains dwi/, t2/, mask/
+    excel_path = Path(r"data/labels/sampled_file_list.xlsx")  
+    base_dir = Path(r"D:\1\杂物\学校\ucl\year3\project\project\OneDrive_1_2026-1-15")  
     out_dir = Path("data/splits")
 
     seed = 0
