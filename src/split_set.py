@@ -25,8 +25,8 @@ def main():
     out_dir = Path("data/splits")
 
     seed = 0
-    train_frac = 0.8
-    val_frac = 0.1
+    train_frac = 0.7
+    val_frac = 0.15
 
     dwi_dir = base_dir / "dwi"
     t2_dir = base_dir / "t2"

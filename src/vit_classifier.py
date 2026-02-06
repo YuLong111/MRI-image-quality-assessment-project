@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import random
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
+from xml.parsers.expat import model
 
 import numpy as np
 import torch
@@ -29,7 +29,12 @@ from monai.transforms import (
     DeleteItemsd,
 )
 
-from monai.networks.nets import DenseNet121
+from monai.networks.nets import ViT
+
+
+# ---------- picklable helpers (no lambdas) ----------
+def binarize_mask(x: np.ndarray) -> np.ndarray:
+    return (x > 0).astype(np.float32)
 
 
 def set_seed(seed: int) -> None:
@@ -59,20 +64,22 @@ def make_transforms(
         LoadImaged(keys=load_keys, image_only=False),
         EnsureChannelFirstd(keys=load_keys),
         EnsureTyped(keys=load_keys),
-        Lambdad(keys="mask", func=lambda x: (x > 0).astype(np.float32)),
+
+        # IMPORTANT: no lambda here (Windows multiprocessing safe if you increase workers)
+        Lambdad(keys="mask", func=binarize_mask),
+
         CropForegroundd(keys=spatial_keys, source_key="mask", margin=5),
         ResizeWithPadOrCropd(keys=spatial_keys, spatial_size=roi_size),
+
         ScaleIntensityRangePercentilesd(
-            keys="dwi",
-            lower=1, upper=99, b_min=0.0, b_max=1.0, clip=True
+            keys="dwi", lower=1, upper=99, b_min=0.0, b_max=1.0, clip=True
         ),
     ]
 
     if use_t2:
         xforms.append(
             ScaleIntensityRangePercentilesd(
-                keys="t2",
-                lower=1, upper=99, b_min=0.0, b_max=1.0, clip=True
+                keys="t2", lower=1, upper=99, b_min=0.0, b_max=1.0, clip=True
             )
         )
 
@@ -99,11 +106,10 @@ def make_transforms(
                 RandShiftIntensityd(keys="t2", prob=0.2, offsets=0.05),
             ])
 
+    # Stack channels: [dwi,(t2),mask] -> image
     concat_keys = ["dwi"] + (["t2"] if use_t2 else []) + ["mask"]
     xforms.extend([
         ConcatItemsd(keys=concat_keys, name="image", dim=0),
-        Lambdad(keys="label_bin", func=lambda y: np.int64(y), overwrite=True),
-        Lambdad(keys="label_bin", func=lambda y: torch.tensor(y, dtype=torch.long)),
         DeleteItemsd(keys=[k for k in concat_keys if k in ("dwi", "t2", "mask")]),
         EnsureTyped(keys=["image"]),
     ])
@@ -116,17 +122,22 @@ def evaluate(model: torch.nn.Module, loader: DataLoader, device: torch.device) -
     model.eval()
     all_probs = []
     all_y = []
+
     for batch in loader:
         x = batch["image"].to(device)
-        y = batch["label_bin"].to(device)  
-        logits = model(x)
+        y = torch.as_tensor(batch["label_bin"], dtype=torch.long, device=device)
+
+        out = model(x)
+        logits = out[0] if isinstance(out, tuple) else out
         probs = torch.softmax(logits, dim=1)[:, 1]
+
+
+
         all_probs.append(probs.detach().cpu())
         all_y.append(y.detach().cpu())
 
     probs = torch.cat(all_probs).numpy()
     y = torch.cat(all_y).numpy().astype(int)
-
 
     pred = (probs >= 0.5).astype(int)
     acc = float((pred == y).mean())
@@ -134,10 +145,8 @@ def evaluate(model: torch.nn.Module, loader: DataLoader, device: torch.device) -
     tnr = (pred[y == 0] == 0).mean() if (y == 0).any() else 0.0
     bal_acc = float(0.5 * (tpr + tnr))
 
-
-    auc = None
     try:
-        from sklearn.metrics import roc_auc_score 
+        from sklearn.metrics import roc_auc_score
         auc = float(roc_auc_score(y, probs))
     except Exception:
         auc = float("nan")
@@ -157,19 +166,39 @@ def build_sampler(items: List[Dict[str, Any]]) -> WeightedRandomSampler:
     )
 
 
+def check_vit_compat(roi_size: Tuple[int, int, int], patch_size: Tuple[int, int, int], hidden_size: int, num_heads: int):
+    for s, p in zip(roi_size, patch_size):
+        if s % p != 0:
+            raise ValueError(
+                f"roi_size {roi_size} must be divisible by patch_size {patch_size}. "
+                f"Example working pair: roi_size=(96,96,32), patch_size=(16,16,8)."
+            )
+    if hidden_size % num_heads != 0:
+        raise ValueError(f"hidden_size ({hidden_size}) must be divisible by num_heads ({num_heads}).")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--train_json", default="data/splits/datalist_train.json")
     ap.add_argument("--val_json", default="data/splits/datalist_val.json")
-    ap.add_argument("--out_dir", default="runs/exp_quality_bin")
+    ap.add_argument("--out_dir", default="runs/exp_quality_vit")
     ap.add_argument("--use_t2", action="store_true", help="Use T2 as an additional input channel.")
     ap.add_argument("--roi_size", nargs=3, type=int, default=[96, 96, 32])
     ap.add_argument("--epochs", type=int, default=25)
-    ap.add_argument("--batch_size", type=int, default=2)
-    ap.add_argument("--lr", type=float, default=1e-4)
+    ap.add_argument("--batch_size", type=int, default=1)  # ViT is heavier; start with 1
+    ap.add_argument("--lr", type=float, default=3e-4)      # ViT often likes a bit higher LR than CNN
     ap.add_argument("--num_workers", type=int, default=0)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--cache_rate", type=float, default=0.3)
+
+    # ViT hyperparams (kept small for ~245 cases)
+    ap.add_argument("--patch_size", nargs=3, type=int, default=[16, 16, 8])
+    ap.add_argument("--hidden_size", type=int, default=192)
+    ap.add_argument("--mlp_dim", type=int, default=768)
+    ap.add_argument("--num_layers", type=int, default=6)
+    ap.add_argument("--num_heads", type=int, default=6)
+    ap.add_argument("--dropout", type=float, default=0.1)
+
     args = ap.parse_args()
 
     set_seed(args.seed)
@@ -187,13 +216,17 @@ def main() -> None:
     dist("TRAIN", train_items)
     dist("VAL", val_items)
 
-    train_tf = make_transforms(tuple(args.roi_size), use_t2=args.use_t2, augment=True)
-    val_tf = make_transforms(tuple(args.roi_size), use_t2=args.use_t2, augment=False)
+    roi_size = tuple(args.roi_size)
+    patch_size = tuple(args.patch_size)
+    check_vit_compat(roi_size, patch_size, args.hidden_size, args.num_heads)
+
+    train_tf = make_transforms(roi_size, use_t2=args.use_t2, augment=True)
+    val_tf = make_transforms(roi_size, use_t2=args.use_t2, augment=False)
 
     train_ds = CacheDataset(train_items, transform=train_tf, cache_rate=args.cache_rate, num_workers=args.num_workers)
     val_ds = CacheDataset(val_items, transform=val_tf, cache_rate=1.0, num_workers=args.num_workers)
 
-    sampler = build_sampler(train_items)  
+    sampler = build_sampler(train_items)
     train_loader = DataLoader(
         train_ds,
         batch_size=args.batch_size,
@@ -213,7 +246,22 @@ def main() -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     in_channels = 3 if args.use_t2 else 2
-    model = DenseNet121(spatial_dims=3, in_channels=in_channels, out_channels=2).to(device)
+
+    # ViT classifier
+    model = ViT(
+        in_channels=in_channels,
+        img_size=roi_size,
+        patch_size=patch_size,
+        hidden_size=args.hidden_size,
+        mlp_dim=args.mlp_dim,
+        num_layers=args.num_layers,
+        num_heads=args.num_heads,
+        proj_type="conv",
+        classification=True,
+        num_classes=2,
+        dropout_rate=args.dropout,
+        spatial_dims=3,
+    ).to(device)
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -226,10 +274,13 @@ def main() -> None:
 
         for batch in train_loader:
             x = batch["image"].to(device)
-            y = batch["label_bin"].to(device) 
+            y = torch.as_tensor(batch["label_bin"], dtype=torch.long, device=device)
+
             opt.zero_grad(set_to_none=True)
-            logits = model(x)
+            out = model(x)
+            logits = out[0] if isinstance(out, tuple) else out
             loss = loss_fn(logits, y)
+
             loss.backward()
             opt.step()
 
@@ -251,6 +302,7 @@ def main() -> None:
             {"model_state": model.state_dict(), "config": vars(args), "epoch": epoch, "best_auc": best_auc},
             out_dir / "last.pt",
         )
+
         score = val_metrics["auc"]
         if np.isnan(score):
             score = val_metrics["bal_acc"]
