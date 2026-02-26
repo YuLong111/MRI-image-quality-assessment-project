@@ -66,6 +66,7 @@ def make_transforms(
 ) -> Compose:
     load_keys = ["dwi", "mask"] + (["t2"] if use_t2 else [])
     spatial_keys = load_keys[:]
+
     x = [
         LoadImaged(keys=load_keys),
         EnsureChannelFirstd(keys=load_keys),
@@ -73,8 +74,10 @@ def make_transforms(
 
         Orientationd(keys=spatial_keys, axcodes="RAS"),
         AsDiscreted(keys="mask", threshold=0.5),
+
         CropForegroundd(keys=spatial_keys, source_key="mask", margin=5),
         ResizeWithPadOrCropd(keys=spatial_keys, spatial_size=roi_size),
+
         ScaleIntensityRangePercentilesd(keys="dwi", lower=1, upper=99, b_min=0.0, b_max=1.0, clip=True),
     ]
     if use_t2:
@@ -105,12 +108,12 @@ def make_transforms(
                 RandShiftIntensityd(keys="t2", prob=0.15, offsets=0.05),
             ]
 
+    # IMPORTANT: when use_t2=True, channel order becomes [dwi, t2, mask]
     concat_keys = ["dwi"] + (["t2"] if use_t2 else []) + ["mask"]
     x += [
         ConcatItemsd(keys=concat_keys, name="image", dim=0),
         EnsureTyped(keys=["image"]),
     ]
-
     return Compose(x)
 
 
@@ -121,19 +124,12 @@ def evaluate_with_details(
     device: torch.device,
     threshold: float = 0.5,
 ) -> Tuple[Dict[str, float], List[Dict[str, Any]]]:
-    """
-    Returns:
-      metrics: {acc, bal_acc, auc}
-      rows: list of per-case dicts including id/label/pred/prob/correct (and b_value if present)
-    """
     model.eval()
     probs_all, y_all = [], []
     rows: List[Dict[str, Any]] = []
 
     for batch in loader:
         x = batch["image"].to(device)
-
-        # label_bin might be list/np/tensor; unify to tensor on device
         y_t = torch.as_tensor(batch["label_bin"], dtype=torch.long, device=device)
 
         logits = model(x)  # (B, 2)
@@ -141,14 +137,11 @@ def evaluate_with_details(
 
         probs_cpu = probs1.detach().cpu().numpy().astype(float)
         y_cpu = y_t.detach().cpu().numpy().astype(int)
-
         preds = (probs_cpu >= threshold).astype(int)
 
-        # pull IDs (list_data_collate keeps strings as list)
         ids = batch.get("id", None)
         bvals = batch.get("b_value", None)
 
-        # ensure iterable length == batch size
         bs = int(y_cpu.shape[0])
         for i in range(bs):
             case_id = ids[i] if isinstance(ids, list) else (ids[i] if ids is not None else "")
@@ -192,13 +185,8 @@ def write_mistakes_files(
     metrics: Dict[str, float],
     rows: List[Dict[str, Any]],
 ) -> None:
-    """
-    Overwrites outputs each time a new best checkpoint is saved.
-    Writes only misclassified cases.
-    """
     mistakes = [r for r in rows if r["correct"] == 0]
 
-    # TXT (human-readable)
     txt_path = out_dir / "best_mistakes_val.txt"
     lines = []
     lines.append(f"Best checkpoint updated at epoch: {epoch}")
@@ -215,7 +203,6 @@ def write_mistakes_files(
         )
     txt_path.write_text("\n".join(lines), encoding="utf-8")
 
-    # CSV (sortable)
     csv_path = out_dir / "best_mistakes_val.csv"
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -235,16 +222,75 @@ def maybe_freeze_backbone(model: torch.nn.Module, freeze: bool) -> None:
     print("Backbone frozen: only classifier head will update (if applicable).")
 
 
+def load_state_dict_with_input_adaptation(
+    model: DenseNet121,
+    state_dict: Dict[str, torch.Tensor],
+    model_in_channels: int,
+) -> None:
+    """
+    Allow loading a checkpoint trained with different input channels by adapting
+    the first conv layer weights (features.conv0.weight).
+
+    Your channel order is:
+      - 2ch training: [dwi, mask]
+      - 3ch training: [dwi, t2, mask]
+    So when adapting 2 -> 3, we map:
+      new[dwi]=old[dwi], new[mask]=old[mask], new[t2]=old[dwi] (initialization)
+    """
+    key = "features.conv0.weight"
+    if key not in state_dict:
+        # fallback: just load normally
+        model.load_state_dict(state_dict, strict=False)
+        return
+
+    w_old = state_dict[key]
+    old_in = int(w_old.shape[1])
+
+    if old_in == model_in_channels:
+        model.load_state_dict(state_dict, strict=True)
+        return
+
+    if (old_in, model_in_channels) == (2, 3):
+        sd = dict(state_dict)
+        w_old = sd.pop(key)  # (64,2,7,7,7)
+        model.load_state_dict(sd, strict=False)
+
+        with torch.no_grad():
+            w_new = model.features.conv0.weight  # (64,3,7,7,7)
+            # channel 0: dwi
+            w_new[:, 0] = w_old[:, 0]
+            # channel 2: mask
+            w_new[:, 2] = w_old[:, 1]
+            # channel 1: t2 -> init from dwi weights
+            w_new[:, 1] = w_old[:, 0]
+        print("Adapted conv0 weights: 2ch checkpoint -> 3ch model (added T2 channel).")
+        return
+
+    if (old_in, model_in_channels) == (3, 2):
+        sd = dict(state_dict)
+        w_old = sd.pop(key)  # (64,3,7,7,7)
+        model.load_state_dict(sd, strict=False)
+
+        with torch.no_grad():
+            w_new = model.features.conv0.weight  # (64,2,7,7,7)
+            # 2ch model expects [dwi, mask]
+            w_new[:, 0] = w_old[:, 0]  # dwi
+            w_new[:, 1] = w_old[:, 2]  # mask (from channel 2)
+        print("Adapted conv0 weights: 3ch checkpoint -> 2ch model (dropped T2 channel).")
+        return
+
+    raise RuntimeError(
+        f"Cannot adapt conv0 from checkpoint in_channels={old_in} to model in_channels={model_in_channels}."
+    )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--init_ckpt",
-        default=r"D:\1\杂物\学校\ucl\year3\project\project\prostate-mri-quality-monai\MRI-image-quality-assessment\runs\exp_quality_bin\best.pt"
-    )
+    ap.add_argument("--init_ckpt", default=r"D:\1\杂物\学校\ucl\year3\project\project\prostate-mri-quality-monai\MRI-image-quality-assessment\runs\exp_quality_bin\best.pt")
     ap.add_argument("--train_json", default="data/splits/datalist_train.json")
     ap.add_argument("--val_json", default="data/splits/datalist_val.json")
-    ap.add_argument("--out_dir", default="runs/finetune")
-    ap.add_argument("--epochs", type=int, default=20)
+    ap.add_argument("--out_dir", default="runs/three_channels")
+    ap.add_argument("--epochs", type=int, default=25)
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--batch_size", type=int, default=2)
     ap.add_argument("--roi_size", nargs=3, type=int, default=[96, 96, 32])
@@ -252,9 +298,13 @@ def main() -> None:
     ap.add_argument("--cache_rate", type=float, default=0.3)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--freeze_backbone", action="store_true")
-    ap.add_argument("--use_t2", action="store_true", help="Also use T2 as input channel (DWI+T2+mask).")
-    ap.add_argument("--strict_load", action="store_true", help="Strict load_state_dict (fails on mismatch).")
-    ap.add_argument("--threshold", type=float, default=0.6, help="Threshold on P(class=1) to compute acc/bal_acc.")
+    ap.add_argument("--use_t2", default = True, action="store_true", help="Use 3-channel input: [DWI, T2, mask]")
+    ap.add_argument("--threshold", type=float, default=0.6, help="Threshold on P(class=1) for acc/bal_acc")
+    ap.add_argument(
+        "--adapt_input_conv",
+        action="store_true",
+        help="Adapt first conv weights if checkpoint in_channels != current in_channels (recommended when switching --use_t2).",
+    )
     args = ap.parse_args()
 
     set_seed(args.seed)
@@ -299,11 +349,20 @@ def main() -> None:
     in_channels = 3 if args.use_t2 else 2
     model = DenseNet121(spatial_dims=3, in_channels=in_channels, out_channels=2).to(device)
 
-    # Load weights from checkpoint
+    # ---- Load weights from checkpoint (with optional channel adaptation) ----
     ckpt = torch.load(args.init_ckpt, map_location="cpu")
     state = ckpt["model_state"] if isinstance(ckpt, dict) and "model_state" in ckpt else ckpt
-    model.load_state_dict(state, strict=args.strict_load)
-    print(f"Initialized model weights from: {args.init_ckpt}")
+
+    try:
+        model.load_state_dict(state, strict=True)
+        print(f"Loaded checkpoint strictly from: {args.init_ckpt}")
+    except RuntimeError as e:
+        if args.adapt_input_conv:
+            print("Strict load failed; trying input-channel adaptation for conv0...")
+            load_state_dict_with_input_adaptation(model, state, model_in_channels=in_channels)
+            print(f"Loaded checkpoint with adapted conv0 from: {args.init_ckpt}")
+        else:
+            raise e
 
     maybe_freeze_backbone(model, args.freeze_backbone)
 
@@ -349,7 +408,6 @@ def main() -> None:
             out_dir / "last_finetune.pt",
         )
 
-        # same "best" rule as before: prefer AUC, otherwise bal_acc
         score_name = "auc"
         score = val_metrics["auc"]
         if np.isnan(score):
@@ -364,7 +422,6 @@ def main() -> None:
             )
             print(f"  ✔ Saved new best_finetune.pt (score={best_score:.3f})")
 
-            # NEW: write mistake list for this best epoch
             write_mistakes_files(
                 out_dir=out_dir,
                 epoch=epoch,
