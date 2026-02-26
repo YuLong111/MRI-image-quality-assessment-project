@@ -291,7 +291,7 @@ def main() -> None:
     ap.add_argument("--val_json", default="data/splits/datalist_val.json")
     ap.add_argument("--out_dir", default="runs/three_channels")
     ap.add_argument("--epochs", type=int, default=25)
-    ap.add_argument("--lr", type=float, default=1e-5)
+    ap.add_argument("--lr", type=float, default=1e-6)
     ap.add_argument("--batch_size", type=int, default=2)
     ap.add_argument("--roi_size", nargs=3, type=int, default=[96, 96, 32])
     ap.add_argument("--num_workers", type=int, default=0)
