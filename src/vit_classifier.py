@@ -184,20 +184,20 @@ def main() -> None:
     ap.add_argument("--out_dir", default="runs/exp_quality_vit")
     ap.add_argument("--use_t2", action="store_true", help="Use T2 as an additional input channel.")
     ap.add_argument("--roi_size", nargs=3, type=int, default=[96, 96, 32])
-    ap.add_argument("--epochs", type=int, default=25)
+    ap.add_argument("--epochs", type=int, default=40)
     ap.add_argument("--batch_size", type=int, default=1)  # ViT is heavier; start with 1
-    ap.add_argument("--lr", type=float, default=3e-4)      # ViT often likes a bit higher LR than CNN
+    ap.add_argument("--lr", type=float, default=1e-4)      # ViT often likes a bit higher LR than CNN
     ap.add_argument("--num_workers", type=int, default=0)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--cache_rate", type=float, default=0.3)
 
     # ViT hyperparams (kept small for ~245 cases)
     ap.add_argument("--patch_size", nargs=3, type=int, default=[16, 16, 8])
-    ap.add_argument("--hidden_size", type=int, default=192)
-    ap.add_argument("--mlp_dim", type=int, default=768)
-    ap.add_argument("--num_layers", type=int, default=6)
-    ap.add_argument("--num_heads", type=int, default=6)
-    ap.add_argument("--dropout", type=float, default=0.1)
+    ap.add_argument("--hidden_size", type=int, default=128)
+    ap.add_argument("--mlp_dim", type=int, default=512)
+    ap.add_argument("--num_layers", type=int, default=4)
+    ap.add_argument("--num_heads", type=int, default=4)
+    ap.add_argument("--dropout", type=float, default=0.25)
 
     args = ap.parse_args()
 
@@ -264,8 +264,7 @@ def main() -> None:
     ).to(device)
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
-    loss_fn = torch.nn.CrossEntropyLoss()
-
+    loss_fn = torch.nn.CrossEntropyLoss(label_smoothing=0.05)
     best_auc = -1.0
     for epoch in range(1, args.epochs + 1):
         model.train()

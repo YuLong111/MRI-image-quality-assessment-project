@@ -244,7 +244,7 @@ def main() -> None:
     ap.add_argument("--train_json", default="data/splits/datalist_train.json")
     ap.add_argument("--val_json", default="data/splits/datalist_val.json")
     ap.add_argument("--out_dir", default="runs/finetune")
-    ap.add_argument("--epochs", type=int, default=20)
+    ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--batch_size", type=int, default=2)
     ap.add_argument("--roi_size", nargs=3, type=int, default=[96, 96, 32])
@@ -254,7 +254,7 @@ def main() -> None:
     ap.add_argument("--freeze_backbone", action="store_true")
     ap.add_argument("--use_t2", action="store_true", help="Also use T2 as input channel (DWI+T2+mask).")
     ap.add_argument("--strict_load", action="store_true", help="Strict load_state_dict (fails on mismatch).")
-    ap.add_argument("--threshold", type=float, default=0.6, help="Threshold on P(class=1) to compute acc/bal_acc.")
+    ap.add_argument("--threshold", type=float, default=0.7, help="Threshold on P(class=1) to compute acc/bal_acc.")
     args = ap.parse_args()
 
     set_seed(args.seed)
